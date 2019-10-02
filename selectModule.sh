@@ -2,7 +2,7 @@
 set -Eu
 
 # Change the 'DIR' variable!
-DIR=$HOME/Workspace/javascript/deno/deno_std
+DIR=
 URLBASE=https://deno.land/std
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
 SELECTIONAPPS=("rofi -i -dmenu" dmenu)
@@ -57,14 +57,17 @@ select_from() {
 }
 
 dir=${1:-${DIR}}
+[ -z $dir ] \
+  && printf "Define the 'DIR' variable or call the script with the directory path as first argument.\n" \
+  && exit 1
 urlbase=${2:-${URLBASE}}
 selectionApp="$(select_from "$SELECTIONAPPS")"
 copyApp="$(select_from "$COPYAPPS")"
-relativeModuleFile=$(printTypescriptFiles $dir | $selectionApp)
+relativeModuleFile=$(printTypescriptFiles $dir | $selectionApp -p "Select File")
 [ -z $relativeModuleFile ] && exit 0
 url=${urlbase%/}/$relativeModuleFile
 modules=$(deno -A $(dirname $0)/getEsModules.js "$dir/$relativeModuleFile")
-module=$(printf "$modules" | $selectionApp)
+module=$(printf "$modules" | $selectionApp -p "Select Module")
 [ -z $module ] && exit 0
 selectedModule=$(printf $module)
 isDefault=$(printf "$module" | cut -s -f 2 -d ' ')

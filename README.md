@@ -16,7 +16,7 @@ The `DIR` variable or the first _positional parameter_ defines the path where
 the script looks for ES modules.  
 If you have `rofi` installed, start the `selectModule.sh` script and all files
 which include ES modules are displayed one below the other.  
-After you selected a file, the Shell script calls the JavaScript script
+After you selected a file, the Bash script calls the JavaScript script
 `getEsModules.js` to display all ESM exports.
 
 When you select an export, the script will automatically copy a string - like
