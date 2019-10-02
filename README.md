@@ -2,16 +2,22 @@
 
 browse and pick your ECMAScript Modules
 
+![](./2019-10-02T18:03:52+02:00_1703x533.gif)
+
+Fits perfectly to [Deno](https://deno.land/), e.g. for picking one of the Deno
+Standard Modules and importing directly from the URL.
+
 ## Get the ES Modules
 
 With the help of the `selectModule.sh` bash script you can pick any **ES
 Module** with your favorite _selection app_, e.g. `rofi` or `dmenu`.
 
-The path very the script looks for modules is defined by the `DIR` variable or
-by the first _positional parameter_.  
-If you have `rofi`, start the script and first all files which include modules
-are displayed one below the other. After that in the next step all ESM exports
-are displayed.
+The `DIR` variable or the first _positional parameter_ defines the path where
+the script looks for ES modules.  
+If you have `rofi` installed, start the `selectModule.sh` script and all files
+which include ES modules are displayed one below the other.  
+After you selected a file, the Shell script calls the JavaScript script
+`getEsModules.js` to display all ESM exports.
 
 When you select an export, the script will automatically copy a string - like
 the following one - into your clipboard:
