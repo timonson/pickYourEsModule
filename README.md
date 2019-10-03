@@ -2,14 +2,21 @@
 
 browse and pick your ECMAScript Modules
 
-![](./2019-10-02T18:03:52+02:00_1703x533.gif)
+![](./2019-10-03T15:08:08+02:00_1307x518.gif)
 
-Fits perfectly to [Deno](https://deno.land/), e.g. for picking one of the Deno
-Standard Modules and importing directly from the URL.
+This script fits perfectly to [Deno](https://deno.land/). For example, you can
+pick one of the Deno Standard Modules and then import it directly with the URL
+which has been copied into your clipboard.
 
-## Get the ES Modules
+## Quick Start
 
-With the help of the `selectModule.sh` bash script you can pick any **ES
+If you want to use this script to browse through all the Deno Standard ES
+Modules run `./selectModule.sh <path>` where `<path>` is the location of the
+Deno Standard Modules [repository](https://github.com/denoland/deno_std).
+
+## Usage
+
+With the help of the `selectModule.sh` Bash script you can pick any **ES
 Module** with your favorite _selection app_, e.g. `rofi` or `dmenu`.
 
 The `DIR` variable or the first _positional parameter_ defines the path where
@@ -28,5 +35,7 @@ You can import the module with the copied string immediately.
 
 ## Dependencies
 
-To use the `selectModule.sh` script you need `xclip` or `xsel` and `rofi` or
-`dmenu`.
+`pickYourEsModule` consists of the two files `selectModule.sh` and
+`getEsModules.js` which have to be in the same directory.
+
+Furthermore it depends on `xclip` or `xsel` and `rofi` or `dmenu`.

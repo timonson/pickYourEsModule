@@ -84,9 +84,10 @@ fullDirPath=$([ "${1:-${DIR:-}}" ] && getAbsolutePathname "${1:-${DIR:-}}") \
 
 urlbase=$([ "${2:-${URLBASE:-}}${commit:-}" ] && printf "${2:-${URLBASE:-}}${commit:-}") \
   || { printf "Define the 'URLBASE' variable or call the script with the url base \
-      second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
+    second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
 
-relativeModulePath=$(printTypescriptFiles $fullDirPath | pick "$selectionApp" "Select File") \
+relativeModulePath=$(printTypescriptFiles $fullDirPath \
+  | pick "$selectionApp" "Select File") \
   || exit 0
 
 moduleSelection=$(deno -A "$(dirname $0)/getEsModules.js" "$fullDirPath/$relativeModulePath" \
