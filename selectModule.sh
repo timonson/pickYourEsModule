@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -Eu
 
-# Change the 'DIR' variable!
+# Change the 'DIR' variable or use the first positional argument.
+# An optional second positional argument overwrites the 'URLBASE' variable.
 DIR=
 URLBASE=https://deno.land/std
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
@@ -13,7 +14,9 @@ exclude() {
   for pattern; do
     string+=" -e $pattern"
   done
-  printf "$file" | grep -i $string > /dev/null 2>&1 && return 1 || true
+  printf "$file" | grep -i $string > /dev/null 2>&1 \
+    && return 1 \
+    || true
 }
 
 getExtension() {
@@ -30,7 +33,7 @@ printTypescriptFiles() {
         || [ ".$(getExtension "$file")" == ".js" ] \
         && grep '^export' "$file" > /dev/null 2>&1 \
         && exclude "$file" $EXCLUDEDREGEX; then
-        printf "${file##$dir/}\n"
+        printf "${file##${fullDirPath}/}\n"
       fi
     fi
   done
@@ -56,22 +59,47 @@ select_from() {
   return 1
 }
 
-dir=${1:-${DIR}}
-[ -z $dir ] \
-  && printf "Define the 'DIR' variable or call the script with the directory path as first argument.\n" \
-  && exit 1
-urlbase=${2:-${URLBASE}}
-selectionApp="$(select_from "$SELECTIONAPPS")"
-copyApp="$(select_from "$COPYAPPS")"
-relativeModuleFile=$(printTypescriptFiles $dir | $selectionApp -p "Select File")
-[ -z $relativeModuleFile ] && exit 0
-url=${urlbase%/}/$relativeModuleFile
-modules=$(deno -A $(dirname $0)/getEsModules.js "$dir/$relativeModuleFile")
-module=$(printf "$modules" | $selectionApp -p "Select Module")
-[ -z $module ] && exit 0
-selectedModule=$(printf $module)
-isDefault=$(printf "$module" | cut -s -f 2 -d ' ')
-[ -z ${isDefault:-} ] \
+getAbsolutePathname() {
+  cd "$(dirname "$1")" > /dev/null 2>&1 || return 1
+  printf "$(pwd)/$(basename "$1")"
+  cd "$OLDPWD"
+}
+
+pick() {
+  local store
+  store=$(${1:-rofi -dmenu} -p "${2:-Select}")
+  [ "$store" ] && printf "$store" || return 1
+}
+
+selectionApp="$(select_from "${SELECTIONAPPS[@]}")"
+
+if [ "${1:-}" == "-c" ]; then
+  shift
+  commit="@$(git -C ${1:-${DIR:-}} rev-parse --short HEAD)"
+fi \
+  || { printf "Could not define variable 'commit'.\n" && exit 1; }
+
+fullDirPath=$([ "${1:-${DIR:-}}" ] && getAbsolutePathname "${1:-${DIR:-}}") \
+  || { printf "Path ${1:-${DIR:-}} doesn't exist.\n" && exit 1; }
+
+urlbase=$([ "${2:-${URLBASE:-}}${commit:-}" ] && printf "${2:-${URLBASE:-}}${commit:-}") \
+  || { printf "Define the 'URLBASE' variable or call the script with the url base \
+      second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
+
+relativeModulePath=$(printTypescriptFiles $fullDirPath | pick "$selectionApp" "Select File") \
+  || exit 0
+
+moduleSelection=$(deno -A "$(dirname $0)/getEsModules.js" "$fullDirPath/$relativeModulePath" \
+  | pick "$selectionApp" "Select Module") \
+  || exit 0
+
+url=${urlbase%/}/$relativeModulePath
+selectedModule=$(printf $moduleSelection)
+isDefault=$(printf "$moduleSelection" | cut -s -f 2 -d ' ')
+[ -z "${isDefault:-}" ] \
   && importCmd="import { $selectedModule } from \"$url\";" \
   || importCmd="import $selectedModule from \"$url\";"
+
+copyApp="$(select_from "${COPYAPPS[@]}")"
+
 printf "$importCmd" | $copyApp
