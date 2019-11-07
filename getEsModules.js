@@ -1,10 +1,10 @@
 const file = Deno.args[1]
+
 import(file)
   .then(module => {
     const modulesString = Object.entries(module)
       .reduce((acc, [key, value]) => {
-        acc +=
-          key === "default" ? `${value.name} (default)\n` : `${value.name}\n`
+        acc += key === "default" ? `${value.name} (default)\n` : `${key}\n`
         return acc
       }, "")
       .trim()

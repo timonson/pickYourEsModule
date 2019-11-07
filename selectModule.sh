@@ -8,6 +8,8 @@ URLBASE=https://deno.land/std
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
 SELECTIONAPPS=("rofi -i -dmenu" dmenu)
 COPYAPPS=("xclip -selection clipboard" xsel)
+# for deno:
+export NO_COLOR=true
 
 exclude() {
   local file=$1 && shift
@@ -24,10 +26,10 @@ getExtension() {
   printf '%s\n' "${_##*.}"
 }
 
-printTypescriptFiles() {
+filterAndPrintFiles() {
   for file in $1/*; do
     if [ -d "$file" ]; then
-      printTypescriptFiles "$file"
+      filterAndPrintFiles "$file"
     else
       if [ ".$(getExtension "$file")" == ".ts" ] \
         || [ ".$(getExtension "$file")" == ".js" ] \
@@ -84,9 +86,9 @@ fullDirPath=$([ "${1:-${DIR:-}}" ] && getAbsolutePathname "${1:-${DIR:-}}") \
 
 urlbase=$([ "${2:-${URLBASE:-}}${commit:-}" ] && printf "${2:-${URLBASE:-}}${commit:-}") \
   || { printf "Define the 'URLBASE' variable or call the script with the url base \
-    second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
+              second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
 
-relativeModulePath=$(printTypescriptFiles $fullDirPath \
+relativeModulePath=$(filterAndPrintFiles $fullDirPath \
   | pick "$selectionApp" "Select File") \
   || exit 0
 
