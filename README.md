@@ -1,6 +1,6 @@
 # pickYourEsModule
 
-browse and pick your ECMAScript Modules
+browse and pick your ECMAScript Modules - for only Linux users until now
 
 ![](./2019-10-03T15:08:08+02:00_1307x518.gif)
 
@@ -12,7 +12,8 @@ which has been copied into your clipboard.
 
 If you want to use this script to browse through all the Deno Standard ES
 Modules run `./selectModule.sh <path>` where `<path>` is the location of the
-Deno Standard Modules [repository](https://github.com/denoland/deno_std).
+Deno Standard Modules [repository](https://github.com/denoland/deno_std) on your
+device.
 
 ## Usage
 
