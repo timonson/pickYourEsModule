@@ -1,4 +1,4 @@
-const file = Deno.args[1]
+const file = Deno.args[0]
 
 import(file)
   .then(module => {
