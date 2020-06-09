@@ -34,6 +34,12 @@ the following one - into your clipboard:
 
 You can import the module with the copied string immediately.
 
+### Arguments
+
+1. The path to a directory with containes files with ES Modules.
+2. The optional base URL. The default is: `https://deno.land/std`. Another example is: `https://cdn.jsdelivr.net/gh/timonson/djwt`.
+3. Optional deno options: For example: `--quiet`.
+
 ## Dependencies
 
 `pickYourEsModule` consists of the two files `selectModule.sh` and
