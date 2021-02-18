@@ -3,7 +3,7 @@ set -Eu
 
 # Change the 'DIR' variable or use the first positional argument.
 # An optional second positional argument overwrites the 'URLBASE' variable.
-DIR=
+DIR=$HOME/Workspace/deno_std
 URLBASE=https://deno.land/std
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
 SELECTIONAPPS=("rofi -i -dmenu" dmenu)
@@ -86,7 +86,7 @@ fullDirPath=$([ "${1:-${DIR:-}}" ] && getAbsolutePathname "${1:-${DIR:-}}") \
 
 urlbase=$([ "${2:-${URLBASE:-}}${commit:-}" ] && printf "${2:-${URLBASE:-}}${commit:-}") \
   || { printf "Define the 'URLBASE' variable or call the script with the url base \
-                              second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
+                                    second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
 
 denoOptions="${@:3}"
 
@@ -94,7 +94,7 @@ relativeModulePath=$(filterAndPrintFiles $fullDirPath \
   | pick "$selectionApp" "Select File") \
   || exit 0
 
-moduleSelection=$(deno run -A $denoOptions "$(dirname $0)/getEsModules.js" "$fullDirPath/$relativeModulePath" \
+moduleSelection=$(deno run -A --no-check $denoOptions "$(dirname $0)/getEsModules.js" "$fullDirPath/$relativeModulePath" \
   | pick "$selectionApp" "Select Module") \
   || exit 0
 
