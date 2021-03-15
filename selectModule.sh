@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -Eu
 
-# Change the 'DIR' variable or use the first positional argument.
-# An optional second positional argument overwrites the 'URLBASE' variable.
-DIR=$HOME/Workspace/deno_std
+# Change the 'URLBASE' variable or use the second positional argument.
 URLBASE=https://deno.land/std
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
 SELECTIONAPPS=("rofi -i -dmenu" dmenu)
@@ -73,20 +71,36 @@ pick() {
   [ "$store" ] && printf "$store" || return 1
 }
 
+hasRightArgs() {
+  if [ -z "$1" ] || [ -z "${2:-${URLBASE}}" ]; then
+    printf "This script needs at least two arguments.\n"
+    return 1
+  fi
+}
+
 selectionApp="$(select_from "${SELECTIONAPPS[@]}")"
+cwd="$(pwd)"
 
-if [ "${1:-}" == "-c" ]; then
+if [ "${1}" == "-c" ]; then
   shift
-  commit="@$(git -C ${1:-${DIR:-}} rev-parse --short HEAD)"
+  hasRightArgs $@ || exit 1
+  cd ${1}
+  commitOrTag="@$(git rev-parse --short HEAD)"
+else
+  hasRightArgs $@ || exit 1
+  cd ${1}
+  git fetch --tags
+  commitOrTag="@$(git describe --tags $(git rev-list --tags --max-count=1))"
 fi \
-  || { printf "Could not define variable 'commit'.\n" && exit 1; }
+  || { printf "Could not define variable 'commitOrTag'.\n" && exit 1; }
+cd "$cwd"
 
-fullDirPath=$([ "${1:-${DIR:-}}" ] && getAbsolutePathname "${1:-${DIR:-}}") \
-  || { printf "Path ${1:-${DIR:-}} doesn't exist.\n" && exit 1; }
+fullDirPath=$([ "${1}" ] && getAbsolutePathname "${1}") \
+  || { printf "Path ${1} doesn't exist.\n" && exit 1; }
 
-urlbase=$([ "${2:-${URLBASE:-}}${commit:-}" ] && printf "${2:-${URLBASE:-}}${commit:-}") \
+urlbase=$([ "${2:-${URLBASE}}${commitOrTag}" ] && printf "${2:-${URLBASE}}${commitOrTag}") \
   || { printf "Define the 'URLBASE' variable or call the script with the url base \
-                                    second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
+               second argument. Example: URLBASE=https://deno.land/std\n" && exit 1; }
 
 denoOptions="${@:3}"
 

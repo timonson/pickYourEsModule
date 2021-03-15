@@ -1,43 +1,28 @@
 # pickYourEsModule
 
-browse and pick your ECMAScript Modules - only for Linux users for now.
+browse and pick your ECMAScript Modules - only for Linux.
 
 ![](./2019-10-03T15:08:08+02:00_1307x518.gif)
 
 This script fits perfectly to [Deno](https://deno.land/). For example, you can
-pick one of the Deno Standard Modules and then import it directly with the URL
+choose one of the Deno Standard Modules and then import it directly with the URL
 which has been copied into your clipboard.
 
 ## Quick Start
 
-If you want to use this script to browse through all the Deno Standard ES
+If you want to use this script for _browsing_ through all the `deno_std` ES
 Modules run `./selectModule.sh <path>` where `<path>` is the location of the
-Deno Standard Modules
-[repository](https://github.com/denoland/deno/tree/master/std/) on your device.
+`deno_std` [repository](https://github.com/denoland/deno_std) on your device.
 
-## Usage
-
-With the help of the `selectModule.sh` Bash script you can pick any **ES
-Module** with your favorite _selection app_, e.g. `rofi` or `dmenu`.
-
-The `DIR` variable or the first _positional parameter_ defines the path where
-the script looks for ES modules.  
-If you have `rofi` installed, start the `selectModule.sh` script and all files
-which include ES modules are displayed one below the other.  
-After you selected a file, the Bash script calls the JavaScript script
-`getEsModules.js` to display all ESM exports.
-
-When you select an export, the script will automatically copy a string - like
+When you select an ES Module, the script will automatically copy a string - like
 the following one - into your clipboard:
 
 `import { serve } from "https://deno.land/std/http/server.ts";`
 
-You can import the module with the copied string immediately.
+## Arguments
 
-### Arguments
-
-1. The path to a directory with containes files with ES Modules.
-2. The optional base URL. The default is: `https://deno.land/std`. Another example is: `https://cdn.jsdelivr.net/gh/timonson/djwt`.
+1. A path to a directory with containes files with ES Modules.
+2. An optional base URL. The default is: `https://deno.land/std`.
 3. Optional deno options: For example: `--quiet`.
 
 ## Dependencies
