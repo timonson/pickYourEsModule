@@ -81,7 +81,12 @@ hasRightArgs() {
 selectionApp="$(select_from "${SELECTIONAPPS[@]}")"
 cwd="$(pwd)"
 
-if [ "${1}" == "-c" ]; then
+if [ "${1}" == "-f" ]; then
+  shift
+  hasRightArgs $@ || exit 1
+  cd ${1}
+  commitOrTag=
+elif [ "${1}" == "-c" ]; then
   shift
   hasRightArgs $@ || exit 1
   cd ${1}
@@ -93,6 +98,7 @@ else
   commitOrTag="@$(git describe --tags $(git rev-list --tags --max-count=1))"
 fi \
   || { printf "Could not define variable 'commitOrTag'.\n" && exit 1; }
+
 cd "$cwd"
 
 fullDirPath=$([ "${1}" ] && getAbsolutePathname "${1}") \
