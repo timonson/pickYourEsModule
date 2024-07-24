@@ -23,7 +23,8 @@ the following one - into your clipboard:
 
 1. A path to a directory with containes files with ES Modules.
 2. An optional base URL. The default is: `https://deno.land/std`.
-3. Optional deno options: For example: `--quiet`.
+3. Keep or remove git tags from URL wit `-f`.
+4. Optional deno options: For example: `--quiet`.
 
 ## Dependencies
 
