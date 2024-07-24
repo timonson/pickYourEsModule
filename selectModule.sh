@@ -2,7 +2,7 @@
 set -Eu
 
 # Change the 'URLBASE' variable or use the second positional argument.
-URLBASE=https://deno.land/std
+URLBASE='file:///home/timo/shared'
 EXCLUDEDREGEX='prettier \.d\. _test playground testdata bundle'
 SELECTIONAPPS=("rofi -i -dmenu" dmenu)
 COPYAPPS=("xclip -selection clipboard" xsel)
